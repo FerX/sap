@@ -122,7 +122,7 @@ jQuery(function(){superSeasonAlgo(jQuery)})
 var css = document.createElement("link")
 css.rel = "stylesheet"
 css.type = "text/css"
-css.href = 'https://gitcdn.xyz/repo/FerX/sap/main/sap.css'
+css.href = 'https://cdn.jsdelivr.net/gh/FerX/sap@main/sap.css'
 
 document.getElementsByTagName('head')[0].appendChild(css);
 

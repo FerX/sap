@@ -1,0 +1,23 @@
+#superMessage {
+    position: absolute;
+    width: 50%;
+    right: 150px;
+    text-align: center;
+    top: 10px;
+    font-weight: 800;
+    color: #e75955;
+    font-size: 15px;
+}
+
+#superPro{
+    position: absolute;
+    left: 167px;
+    top: 1px;
+    font-weight: 800;
+    color: #e75955;
+    font-size: 13px;
+}
+
+.superSeasonAlgo .span2 {
+        min-height: 25px;
+}

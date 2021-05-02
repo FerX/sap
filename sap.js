@@ -8,7 +8,7 @@
 
 
 const superSeasonAlgoConfig = {
-	message : 'NON AVERE FRETTA AD ENTRARE - DEVI AVER FRETTA AD USCIRE - 3gg senza un max'
+	message : ''
 }
 
 

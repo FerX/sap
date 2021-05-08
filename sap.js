@@ -16,8 +16,8 @@
 
 
 /*
-var configSAP = {
-	message : 'Slogan message',
+var SAP = {
+	slogan : 'Slogan message',
 	showPro: false  
 }
 */
@@ -26,15 +26,15 @@ function superSeasonAlgo($){
 	console.log("start Super superSeasonAlgo")
 	
 	let config = {
-		message: '',
+		slogan: '',
 		showPro: true
 	}
 	
-	if(configSAP && configSAP.message){
-		config.message = configSAP.message
+	if(SAP && SAP.slogan){
+		config.slogan = configSAP.slogan
 	}
 	
-	if(configSAP && configSAP.showPro!==undefined){
+	if(SAP && SAP.showPro!==undefined){
 		config.showPro = configSAP.showPro
 	}
 	
@@ -133,8 +133,8 @@ function superSeasonAlgo($){
 
 	}
 	
-	if(config.message){
-	    $('body').append("<div id='superMessage'>"+config.message+"</div>");	
+	if(config.slogan){
+	    $('body').append("<div id='superMessage'>"+config.slogan+"</div>");	
 	}
 	if(config.showPro){
 	    $('body a.brand').append("<div id='superPro'>PRO</div>");

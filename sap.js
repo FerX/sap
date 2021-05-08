@@ -1,19 +1,43 @@
 /**
  * superSeasonAlgo
  * 
- * version 1.2
+ * version 1.3
  * 
  * Author: FerX
+ * 
+ * 
+ * changelog
+ * 
+ * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
+ * 
 **/
 
 
-const superSeasonAlgoConfig = {
-	message : ''
-}
 
+
+/*
+var configSAP = {
+	message : 'Slogan message',
+	showPro: false  
+}
+*/
 
 function superSeasonAlgo($){
 	console.log("start Super superSeasonAlgo")
+	
+	let config = {
+		message: '',
+		showPro: true
+	}
+	
+	if(configSAP && configSAP.message){
+		config.message = configSAP.message
+	}
+	
+	if(configSAP && configSAP.showPro!==undefined){
+		config.showPro = configSAP.showPro
+	}
+	
 
 	const url = window.location.pathname
 	const urlWithPopUp = ["/system/strategies/","/system/strategies/recommendation","/system/strategies/scanner"]
@@ -109,9 +133,12 @@ function superSeasonAlgo($){
 
 	}
 	
-	$('body').append("<div id='superMessage'>"+superSeasonAlgoConfig.message+"</div>");
-	
-	$('body').append("<div id='superPro'>PRO</div>");
+	if(config.message){
+	    $('body').append("<div id='superMessage'>"+config.message+"</div>");	
+	}
+	if(config.showPro){
+	    $('body a.brand').append("<div id='superPro'>PRO</div>");
+	}
 	
 
 }
@@ -125,5 +152,4 @@ css.type = "text/css"
 css.href = 'https://cdn.jsdelivr.net/gh/FerX/sap@main/sap.css'
 
 document.getElementsByTagName('head')[0].appendChild(css);
-
 

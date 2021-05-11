@@ -16,12 +16,11 @@
 
 
 
-/*
 var SAP = {
-	slogan : 'Slogan message',
-	showPro: false  
+	slogan : 'NON PERDERE SOLDI. E FAI CON CALMA',
+	showPro: true  
 }
-*/
+
 
 // sort array ascending
 const asc = arr => arr.sort((a, b) => a - b);

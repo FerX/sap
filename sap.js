@@ -1,7 +1,7 @@
 /**
  * superSeasonAlgo
  * 
- * version 1.3
+ * version 1.3.1
  * 
  * Author: FerX
  * 
@@ -9,6 +9,7 @@
  * changelog
  * 
  * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
+ * 1.3.1 fix config
  * 
 **/
 
@@ -31,11 +32,11 @@ function superSeasonAlgo($){
 	}
 	
 	if(SAP && SAP.slogan){
-		config.slogan = configSAP.slogan
+		config.slogan = SAP.slogan
 	}
 	
 	if(SAP && SAP.showPro!==undefined){
-		config.showPro = configSAP.showPro
+		config.showPro = SAP.showPro
 	}
 	
 

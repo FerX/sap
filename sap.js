@@ -14,11 +14,14 @@
 **/
 
 
-
-
 var SAP = {
-	slogan : 'NON PERDERE SOLDI. E FAI CON CALMA',
-	showPro: true  
+	slogan : 'Slogan',
+	showPro: false  
+}
+
+var configSAP = {
+	slogan : 'Slogan',
+	showPro: false  
 }
 
 

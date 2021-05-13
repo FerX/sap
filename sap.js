@@ -13,7 +13,7 @@
  * 
 **/
 
-
+/*
 var SAP = {
 	slogan : 'Slogan',
 	showPro: false  
@@ -23,7 +23,7 @@ var configSAP = {
 	slogan : 'Slogan',
 	showPro: false  
 }
-
+*/
 
 // sort array ascending
 const asc = arr => arr.sort((a, b) => a - b);

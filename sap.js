@@ -56,7 +56,7 @@ const q75 = arr => quantile(arr, .75);
 //the content of data is used as column header of the new rows
 //the other cells are left blank.
 //13 cells in total are created per each rows
-function genera_tabella(table, data) {
+function generate_table(table, data) {
 	for (let element of data) {
 
 		//skip the header
@@ -81,7 +81,7 @@ function genera_tabella(table, data) {
 }
 
 //write the column array "data" in the column "colonna"  of the table-array "table" passed with header
-function scrivi_tabella(table, data, colonna) {
+function write_table(table, data, colonna) {
 
 	riga=1; //rows 0 is the table header
 	for (let element of data) {
@@ -94,13 +94,13 @@ function scrivi_tabella(table, data, colonna) {
 }
 
 //calculate the statistical data of the backtest table
-function calcola_dati() {
+function calculate_data() {
 
 	//create table array for calculation
 	var myTableArray = [];
 
 	//create a column array for calculated data 
-	var BT_calcolati = new Array(7); //MIN,MAX,AVERAGE,STD_DEV,75°PERC,50°PERC,25°PERC
+	var calculated_data = new Array(7); //MIN,MAX,AVERAGE,STD_DEV,75°PERC,50°PERC,25°PERC
 
 	//Reference to the tables in the SA backtest page. 
 	var BT_Tables = document.getElementsByTagName("table");
@@ -138,9 +138,9 @@ function calcola_dati() {
 	}
 
 	// process the columns with numeric data
-	let colonne_da_processare = [2,4,5,6,7,9,11,12];
+	let column_tobe_processed = [2,4,5,6,7,9,11,12];
 
-	for (let c of colonne_da_processare) {
+	for (let c of column_tobe_processed) {
 
 		//convert the text content of every cell of the column to float
 		var col = myTableArray.map(function(value,index) { return value[c]; }).map(function (x) {return parseFloat(x); });
@@ -180,7 +180,7 @@ function calcola_dati() {
 		var val_25moperc=q25(col).toFixed(2);
 
 		//prepare the column array with calculated data 
-		let dati_calcolati = [
+		let calculated_data = [
 		{ data: val_min},
 		{ data: val_max},
 		{ data: val_med},
@@ -191,13 +191,13 @@ function calcola_dati() {
 		];
 		
 		//write the column in the table of the page
-		scrivi_tabella(BT_Table, dati_calcolati, c);
+		write_table(BT_Table, calculated_data, c);
 	}
 
 	// process the columns with dates
-	colonne_da_processare = [1,3,8,10];
+	column_tobe_processed = [1,3,8,10];
 
-	for (let c of colonne_da_processare) {
+	for (let c of column_tobe_processed) {
 		
 		//align the year of the dates to allow a correct comparison by month and day. "-" dates are set to 0.
 		var col = myTableArray.map(function(value) { return value[c]; }).map(function (x) {
@@ -231,13 +231,13 @@ function calcola_dati() {
 		//other statistics to be valuated later if necessary for dates
 		
 		//prepare the column array with calculated data 
-		let dati_calcolati = [
+		let calculated_data = [
 			{ data: str_min},
 			{ data: str_max},
 		];
 
 		//write the column in the table of the page
-		scrivi_tabella(BT_Table, dati_calcolati, c);
+		write_table(BT_Table, calculated_data, c);
 	}	
 
 	//write the message of the calculated data
@@ -371,8 +371,9 @@ function superSeasonAlgo($){
 		var html='<div class="row SSA_BT_Input" style="text-align:center;">';
 			html+='<p>Specifica gli anni su cui fare i calcoli</p>'
 			html+='<input type="text" id="myText" value="15">';
-			html+='<button onclick="calcola_dati()">Aggiorna</button>'
+			html+='<button onclick="calculate_data()">Aggiorna</button>'
 			html+='<p id="anni"></p>'
+			html+='<p>RB1.10</p>'
 			html+='</div>';
 
 		//select the backtest chart as a refernce in the DOM

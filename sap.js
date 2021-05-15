@@ -9,11 +9,12 @@
  * changelog
  * 
  *
- * 1.x aggiunta possibilità di selezionare le righe per il calcolo. Aggiunto config per anni percentile low e high 
- * 1.x aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese. 
  * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
  * 
 **/
+
+//RB aggiunta possibilità di selezionare le righe per il calcolo. Aggiunto config per anni percentile low e high 
+//RB aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese. 
 
 /*
 var SAP = {

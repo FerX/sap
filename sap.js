@@ -9,7 +9,7 @@
  * changelog
  * 
  *
- * 1.x aggiunta possibiulità di selezionare le righe per il calcolo. 
+ * 1.x aggiunta possibilità di selezionare le righe per il calcolo. Aggiunto config per anni percentile low e high 
  * 1.x aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese. 
  * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
  * 
@@ -26,7 +26,11 @@ var configSAP = {
 	showPro: false  
 };
 var configBT = {
-	years : 15
+	years : 15,
+	high_perc : .95,
+	low_perc : .05,
+	high_perc_name : "95°perc",
+	low_perc_name : "5°perc",
 };
 */	
 
@@ -51,7 +55,7 @@ const quantile = (arr, q) => {
 
 //BACKTEST FEATURES
 //lower percentile (default 5%)
-const qlow = arr => quantile(arr, .05);
+const qlow = arr => quantile(arr, configBT.low_perc);
 
 //BACKTEST FEATURES
 //median (50%)
@@ -60,7 +64,7 @@ const median = arr => q50(arr);
 
 //BACKTEST FEATURES
 //higher percentile (default 95%)
-const qhigh = arr => quantile(arr, .95);
+const qhigh = arr => quantile(arr, configBT.high_perc);
 
 //BACKTEST FEATURES
 //write the column array "data" in the column "colonna"  of the table-array "table" passed with header
@@ -98,7 +102,7 @@ function calculate_data() {
 	//Calculate the number of rows excluding the rows of the calculated data + header (8 total) (this function is executed once the additional rows are already created)
 	var rowLength_max = BT_Table.rows.length-8;
 
-	//Read how many rows of the table the user wnat to analyze
+	//Read how many rows of the table the user want to analyze
 	//var rowLength = parseInt(document.getElementById("myText").value);
 	var rowLength=configBT.years;
 	
@@ -117,7 +121,6 @@ function calculate_data() {
 		var cellLength = rowCells.length;
 
 		//if the row is selected by the checkbox, copy the row cell-by-cell in a new row array
-		
 		if(BT_check_row[i-8].checked){
 			var myTableRow = new Array (cellLength);
 			for(var j = 0; j < cellLength; j++){	
@@ -128,117 +131,138 @@ function calculate_data() {
 		}
 	}
 
-	// process the columns with numeric data
-	let column_tobe_processed = [2,4,5,6,7,9,11,12];
-
-	for (let c of column_tobe_processed) {
-
-		//convert the text content of every cell of the column to float
-		var col = myTableArray.map(function(value,index) { return value[c]; }).map(function (x) {return parseFloat(x); });
-		
-		
-		//calculate the minimum and round to 2 decimal digit
-		var val_min=Math.min(...col).toFixed(2);
-
-		//calculate the maximum and round to 2 decimal digit
-		var val_max=Math.max(...col).toFixed(2);
-
-		//calculate the average and round to 2 decimal digit
-		var val_med=0;
-		for (var n of col) {
-		val_med+=n;	
-		}
-		val_med=parseFloat(val_med/col.length).toFixed(2);
-
-		//calculate the standard deviation and round to 2 decimal digit
-		var val_dev_std=0;
-		var array_aux=[...col];//copia l'array dei valori
-		for (var m of array_aux) {
-		m-=val_med;
-		m=Math.pow(m,2);
-		val_dev_std+=m;
-		}
-		val_dev_std/=(col.length-1);
-		val_dev_std=Math.sqrt(val_dev_std);
-		val_dev_std=parseFloat(val_dev_std).toFixed(2);
-
-		//higher percentile 
-		var val_high_perc=qhigh(col).toFixed(2);
-
-		//median (50 percentile)
-		var val_median=q50(col).toFixed(2);
-
-		//lower percentile 
-		var val_low_perc=qlow(col).toFixed(2);
-
-		//prepare the column array with calculated data 
+	//clean the table
+	for (i=1;i<13;i++)
+	{
 		let calculated_data = [
-		{ data: val_min},
-		{ data: val_max},
-		{ data: val_med},
-		{ data: val_dev_std},
-		{ data: val_high_perc},
-		{ data: val_median},
-		{ data: val_low_perc}
+		{ data: ""},
+		{ data: ""},
+		{ data: ""},
+		{ data: ""},
+		{ data: ""},
+		{ data: ""},
+		{ data: ""}
 		];
 		
 		//write the column in the table of the page
-		write_table(BT_Table, calculated_data, c);
+		write_table(BT_Table, calculated_data, i);
 	}
+	
+	
+	//write the table
+	if (myTableArray.length!=0){
 
-	// process the columns with dates
-	column_tobe_processed = [1,3,8,10];
-
-	for (let c of column_tobe_processed) {
-		
-		//align the year of the dates to allow a correct comparison by month and day. "-" dates are set to 0.
-		var col = myTableArray.map(function(value) { return value[c]; }).map(function (x) {
-
-			if (x!='-')
-			{
-				var d = new Date(x);
-				d.setFullYear(2000);
-				return d;
-			}
+		// process the columns with numeric data
+		let column_tobe_processed = [2,4,5,6,7,9,11,12];
+	
+		for (let c of column_tobe_processed) {
+	
+			//convert the text content of every cell of the column to float
+			var col = myTableArray.map(function(value,index) { return value[c]; }).map(function (x) {return parseFloat(x); });
 			
-			else return 0;//if the date is "-"
-
-		});
-
-		//remove the dates "-" 
-		for( var i = 0; i < col.length; i++){ 
-			if ( col[i] === 0) {
-				col.splice(i, 1); 
+			
+			//calculate the minimum and round to 2 decimal digit
+			var val_min=Math.min(...col).toFixed(2);
+	
+			//calculate the maximum and round to 2 decimal digit
+			var val_max=Math.max(...col).toFixed(2);
+	
+			//calculate the average and round to 2 decimal digit
+			var val_med=0;
+			for (var n of col) {
+			val_med+=n;	
 			}
+			val_med=parseFloat(val_med/col.length).toFixed(2);
+	
+			//calculate the standard deviation and round to 2 decimal digit
+			var val_dev_std=0;
+			var array_aux=[...col];//copia l'array dei valori
+			for (var m of array_aux) {
+			m-=val_med;
+			m=Math.pow(m,2);
+			val_dev_std+=m;
+			}
+			val_dev_std/=(col.length-1);
+			val_dev_std=Math.sqrt(val_dev_std);
+			val_dev_std=parseFloat(val_dev_std).toFixed(2);
+	
+			//higher percentile 
+			var val_high_perc=qhigh(col).toFixed(2);
+	
+			//median (50 percentile)
+			var val_median=q50(col).toFixed(2);
+	
+			//lower percentile 
+			var val_low_perc=qlow(col).toFixed(2);
+	
+			//prepare the column array with calculated data 
+			let calculated_data = [
+			{ data: val_min},
+			{ data: val_max},
+			{ data: val_med},
+			{ data: val_dev_std},
+			{ data: val_high_perc},
+			{ data: val_median},
+			{ data: val_low_perc}
+			];
+			
+			//write the column in the table of the page
+			write_table(BT_Table, calculated_data, c);
 		}
-
-		//calculate the minimum and round to 2 decimal digit
-		data_min=new Date(Math.min(...col));
-		str_min = data_min.getDate()+'/'+(data_min.getMonth()+1);
-
-		//calculate the maximum and round to 2 decimal digit
-		data_max=new Date (Math.max(...col));
-		str_max = data_max.getDate()+'/'+(data_max.getMonth()+1);
-
-		//other statistics to be valuated later if necessary for dates
-		
-		//prepare the column array with calculated data 
-		let calculated_data = [
-			{ data: str_min},
-			{ data: str_max},
-		];
-
-		//write the column in the table of the page
-		write_table(BT_Table, calculated_data, c);
-	}	
-
+	
+		// process the columns with dates
+		column_tobe_processed = [1,3,8,10];
+	
+		for (let c of column_tobe_processed) {
+			
+			//align the year of the dates to allow a correct comparison by month and day. "-" dates are set to 0.
+			var col = myTableArray.map(function(value) { return value[c]; }).map(function (x) {
+	
+				if (x!='-')
+				{
+					var d = new Date(x);
+					d.setFullYear(2000);
+					return d;
+				}
+				
+				else return 0;//if the date is "-"
+	
+			});
+	
+			//remove the dates "-" 
+			for( var i = 0; i < col.length; i++){ 
+				if ( col[i] === 0) {
+					col.splice(i, 1); 
+				}
+			}
+	
+			//calculate the minimum and round to 2 decimal digit
+			data_min=new Date(Math.min(...col));
+			str_min = data_min.getDate()+'/'+(data_min.getMonth()+1);
+	
+			//calculate the maximum and round to 2 decimal digit
+			data_max=new Date (Math.max(...col));
+			str_max = data_max.getDate()+'/'+(data_max.getMonth()+1);
+	
+			//other statistics to be valuated later if necessary for dates
+			
+			//prepare the column array with calculated data 
+			let calculated_data = [
+				{ data: str_min},
+				{ data: str_max},
+			];
+	
+			//write the column in the table of the page
+			write_table(BT_Table, calculated_data, c);
+		}	
+	
+	}
+	
 	//write the message of the calculated data
 	//document.getElementById("anni").innerHTML = "Sono stati processati " + (rowLength) +" anni.";
-
 }	
 
-function set_data(yy)
-{
+function set_data(yy) {
 	
 	//Get the collection of checkboxes of the rows
 	var BT_check_row = document.getElementsByClassName("check_row");
@@ -462,9 +486,9 @@ function superSeasonAlgo($){
 
 		//prepare the header column of the table for calculated data
 		let calculated_data_header= [
-			{ name: "5°perc"},
+			{ name: configBT.low_perc_name},
 			{ name: "MEDIANA"},
-			{ name: "95°perc"},
+			{ name: configBT.high_perc_name},
 			{ name: "DEV_STD"},
 			{ name: "MED"},
 			{ name: "MAX"},

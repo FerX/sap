@@ -8,7 +8,7 @@
  * 
  * changelog
  * 
- * 1.x aggiunte righe con dati statistici calcolati su un numero di anni selezionabile
+ * 1.x aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese.
  * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
  * 
 **/
@@ -383,7 +383,7 @@ function superSeasonAlgo($){
 		$(html).insertAfter(BTchart);
 
 		//prepare the header column of the table for calculated data
-		let intestazione_dati_calcolati = [
+		let calculated_data_header= [
 			{ name: "25°perc"},
 			{ name: "MEDIANA"},
 			{ name: "75°perc"},
@@ -401,10 +401,10 @@ function superSeasonAlgo($){
 		var BT_Table = BT_Tables[1];
 
 		//generate the table in the document
-		genera_tabella(BT_Table, intestazione_dati_calcolati);
+		generate_table(BT_Table, calculated_data_header);
 
 		//fill the table with calculated data based on default specified years
-		calcola_dati();
+		calculate_data();
 
 	}
 	

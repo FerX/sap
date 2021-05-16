@@ -9,10 +9,14 @@
  * changelog
  * 
  *
+ * 1.x aggiunta possibilità di selezionare le righe per il calcolo. Aggiunto config per anni percentile low e high 
+ * 1.x aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese. 
  * 1.3 agganciatata scritta PRO con il logo, configurazione esterna
  * 
 **/
 
+
+//RB Nomi in Camel Case
 //RB aggiunta possibilità di selezionare le righe per il calcolo. Aggiunto config per anni percentile low e high 
 //RB aggiunte righe con dati statistici calcolati su un numero di anni selezionabile. Nomi funzioni e dati in inglese. 
 
@@ -56,7 +60,7 @@ const quantile = (arr, q) => {
 
 //BACKTEST FEATURES
 //lower percentile (default 5%)
-const qlow = arr => quantile(arr, configBT.low_perc);
+const qLow = arr => quantile(arr, configBT.low_perc);
 
 //BACKTEST FEATURES
 //median (50%)
@@ -65,11 +69,11 @@ const median = arr => q50(arr);
 
 //BACKTEST FEATURES
 //higher percentile (default 95%)
-const qhigh = arr => quantile(arr, configBT.high_perc);
+const qHigh = arr => quantile(arr, configBT.high_perc);
 
 //BACKTEST FEATURES
 //write the column array "data" in the column "colonna"  of the table-array "table" passed with header
-function write_table(table, data, colonna) {
+function WriteTable(table, data, colonna) {
 
 	riga=1; //rows 0 is the table header
 	for (let element of data) {
@@ -83,59 +87,60 @@ function write_table(table, data, colonna) {
 
 //BACKTEST FEATURES
 //calculate the statistical data of the backtest table
-function calculate_data() {
+function CalculateData() {
 
 	//create table array for calculation
-	var myTableArray = [];
+	var MyTableArray = [];
 
 	//create a column array for calculated data 
-	var calculated_data = new Array(7); //MIN,MAX,AVERAGE,STD_DEV,HIGH_PERC,50°PERC,LOW_PERC
+	var CalculatedData = new Array(7); //MIN,MAX,AVERAGE,STD_DEV,HIGH_PERC,50°PERC,LOW_PERC
 
 	//Reference to the tables in the SA backtest page. 
-	var BT_Tables = document.getElementsByTagName("table");
+	var BtTables = document.getElementsByTagName("table");
 
 	//The table to be copied is the second one
-	var BT_Table = BT_Tables[1];
+	var BtDetailTable = BtTables[1];
 
 	//Get the collection of checkboxes of the rows
-	var BT_check_row = document.getElementsByClassName("check_row");
+	var BtCheckRow = document.getElementsByClassName("check_row");
 
 	//Calculate the number of rows excluding the rows of the calculated data + header (8 total) (this function is executed once the additional rows are already created)
-	var rowLength_max = BT_Table.rows.length-8;
+	var RowLengthMax = BtDetailTable.rows.length-8;
 
 	//Read how many rows of the table the user want to analyze
 	//var rowLength = parseInt(document.getElementById("myText").value);
-	var rowLength=configBT.years;
+	//var RowLength=configBT.years;
+	var RowLength=RowLengthMax;
 	
 	//if the specified rows are greater than the existing, the rows are blocked to the maximum 
-	if (rowLength>rowLength_max) {
-		rowLength=rowLength_max;
-	}
+	//if (RowLength>RowLengthMax) {
+	//	RowLength=RowLengthMax;
+	//}
 
 	//copy the backtest table to the data table-array (excluding headers and calculated data, row by row)
-	for (var i = 8; i < (rowLength+8); i++){
+	for (var i = 8; i < (RowLength+8); i++){
 
 		//take the collection of the cells of the row   
-		var rowCells = BT_Table.rows.item(i).cells;
+		var RowCells = BtDetailTable.rows.item(i).cells;
 
 		//Count how many cells there are
-		var cellLength = rowCells.length;
+		var CellLength = RowCells.length;
 
 		//if the row is selected by the checkbox, copy the row cell-by-cell in a new row array
-		if(BT_check_row[i-8].checked){
-			var myTableRow = new Array (cellLength);
-			for(var j = 0; j < cellLength; j++){	
-				myTableRow[j] = rowCells.item(j).innerText;
+		if(BtCheckRow[i-8].checked){
+			var MyTableRow = new Array (CellLength);
+			for(var j = 0; j < CellLength; j++){	
+				MyTableRow[j] = RowCells.item(j).innerText;
 			}
 			//push the copied row in the data table-array
-			myTableArray.push(myTableRow);
+			MyTableArray.push(MyTableRow);
 		}
 	}
 
 	//clean the table
 	for (i=1;i<13;i++)
 	{
-		let calculated_data = [
+		let CalculatedData = [
 		{ data: ""},
 		{ data: ""},
 		{ data: ""},
@@ -146,78 +151,78 @@ function calculate_data() {
 		];
 		
 		//write the column in the table of the page
-		write_table(BT_Table, calculated_data, i);
+		WriteTable(BtDetailTable, CalculatedData, i);
 	}
 	
 	
 	//write the table
-	if (myTableArray.length!=0){
+	if (MyTableArray.length!==0){
 
 		// process the columns with numeric data
-		let column_tobe_processed = [2,4,5,6,7,9,11,12];
+		let ColumnsTobeProcessed = [2,4,5,6,7,9,11,12];
 	
-		for (let c of column_tobe_processed) {
+		for (let c of ColumnsTobeProcessed) {
 	
 			//convert the text content of every cell of the column to float
-			var col = myTableArray.map(function(value,index) { return value[c]; }).map(function (x) {return parseFloat(x); });
+			var Col = MyTableArray.map(function(value,index) { return value[c]; }).map(function (x) {return parseFloat(x); });
 			
 			
 			//calculate the minimum and round to 2 decimal digit
-			var val_min=Math.min(...col).toFixed(2);
+			var ValMin=Math.min(...Col).toFixed(2);
 	
 			//calculate the maximum and round to 2 decimal digit
-			var val_max=Math.max(...col).toFixed(2);
+			var ValMax=Math.max(...Col).toFixed(2);
 	
 			//calculate the average and round to 2 decimal digit
-			var val_med=0;
-			for (var n of col) {
-			val_med+=n;	
+			var ValMed=0;
+			for (var n of Col) {
+			ValMed+=n;	
 			}
-			val_med=parseFloat(val_med/col.length).toFixed(2);
+			ValMed=parseFloat(ValMed/Col.length).toFixed(2);
 	
 			//calculate the standard deviation and round to 2 decimal digit
-			var val_dev_std=0;
-			var array_aux=[...col];//copia l'array dei valori
-			for (var m of array_aux) {
-			m-=val_med;
+			var ValDevStd=0;
+			var ArrayAux=[...Col];//copia l'array dei valori
+			for (var m of ArrayAux) {
+			m-=ValMed;
 			m=Math.pow(m,2);
-			val_dev_std+=m;
+			ValDevStd+=m;
 			}
-			val_dev_std/=(col.length-1);
-			val_dev_std=Math.sqrt(val_dev_std);
-			val_dev_std=parseFloat(val_dev_std).toFixed(2);
+			ValDevStd/=(Col.length-1);
+			ValDevStd=Math.sqrt(ValDevStd);
+			ValDevStd=parseFloat(ValDevStd).toFixed(2);
 	
 			//higher percentile 
-			var val_high_perc=qhigh(col).toFixed(2);
+			var ValHighPerc=qHigh(Col).toFixed(2);
 	
 			//median (50 percentile)
-			var val_median=q50(col).toFixed(2);
+			var ValMedian=q50(Col).toFixed(2);
 	
 			//lower percentile 
-			var val_low_perc=qlow(col).toFixed(2);
+			var ValLowPerc=qLow(Col).toFixed(2);
 	
 			//prepare the column array with calculated data 
-			let calculated_data = [
-			{ data: val_min},
-			{ data: val_max},
-			{ data: val_med},
-			{ data: val_dev_std},
-			{ data: val_high_perc},
-			{ data: val_median},
-			{ data: val_low_perc}
+			let CalculatedData = [
+			{ data: ValMin},
+			{ data: ValMax},
+			{ data: ValMed},
+			{ data: ValDevStd},
+			{ data: ValHighPerc},
+			{ data: ValMedian},
+			{ data: ValLowPerc}
 			];
 			
 			//write the column in the table of the page
-			write_table(BT_Table, calculated_data, c);
+			WriteTable(BtDetailTable, CalculatedData, c);
 		}
 	
 		// process the columns with dates
-		column_tobe_processed = [1,3,8,10];
+		ColumnsTobeProcessed = [1,3,8,10];
 	
-		for (let c of column_tobe_processed) {
+		for (let c of ColumnsTobeProcessed) {
 			
 			//align the year of the dates to allow a correct comparison by month and day. "-" dates are set to 0.
-			var col = myTableArray.map(function(value) { return value[c]; }).map(function (x) {
+			Col = MyTableArray.map(function(value) { return value[c]; }).map(function (x) {
 	
 				if (x!='-')
 				{
@@ -231,30 +236,30 @@ function calculate_data() {
 			});
 	
 			//remove the dates "-" 
-			for( var i = 0; i < col.length; i++){ 
-				if ( col[i] === 0) {
-					col.splice(i, 1); 
+			for( i = 0; i < Col.length; i++){ 
+				if ( Col[i] === 0) {
+					Col.splice(i, 1); 
 				}
 			}
 	
 			//calculate the minimum and round to 2 decimal digit
-			data_min=new Date(Math.min(...col));
-			str_min = data_min.getDate()+'/'+(data_min.getMonth()+1);
+			DataMin=new Date(Math.min(...Col));
+			StrMin = DataMin.getDate()+'/'+(DataMin.getMonth()+1);
 	
 			//calculate the maximum and round to 2 decimal digit
-			data_max=new Date (Math.max(...col));
-			str_max = data_max.getDate()+'/'+(data_max.getMonth()+1);
+			DataMax=new Date (Math.max(...Col));
+			StrMax = DataMax.getDate()+'/'+(DataMax.getMonth()+1);
 	
 			//other statistics to be valuated later if necessary for dates
 			
 			//prepare the column array with calculated data 
-			let calculated_data = [
-				{ data: str_min},
-				{ data: str_max},
+			let CalculatedData = [
+				{ data: StrMin},
+				{ data: StrMax},
 			];
 	
 			//write the column in the table of the page
-			write_table(BT_Table, calculated_data, c);
+			WriteTable(BtDetailTable, CalculatedData, c);
 		}	
 	
 	}
@@ -263,13 +268,13 @@ function calculate_data() {
 	//document.getElementById("anni").innerHTML = "Sono stati processati " + (rowLength) +" anni.";
 }	
 
-function set_data(yy) {
+function SetData(yy) {
 	
 	//Get the collection of checkboxes of the rows
-	var BT_check_row = document.getElementsByClassName("check_row");
+	var BtCheckRow = document.getElementsByClassName("check_row");
 	
 	i=0;
-	for (c of BT_check_row)
+	for (c of BtCheckRow)
 	{
 		c.checked=false;
 		if ((i)<yy) {
@@ -404,7 +409,7 @@ function superSeasonAlgo($){
 		//the content of data is used as column header of the new rows
 		//the other cells are left blank.
 		//13 cells in total are created per each rows
-		function generate_table(table, data) {
+		function GenerateTable(table, data) {
 			
 			//insert the rows for calculated data
 			for (let element of data) {
@@ -435,15 +440,15 @@ function superSeasonAlgo($){
 				
 				var tr = table.rows[step];
 				var td = document.createElement('td');
-		    	var bt_checkbox = document.createElement("INPUT");
-			    bt_checkbox.setAttribute("type", "checkbox");
-			    bt_checkbox.setAttribute("class", "check_row");
+		    	var BtCheckBox = document.createElement("INPUT");
+			    BtCheckBox.setAttribute("type", "checkbox");
+			    BtCheckBox.setAttribute("class", "check_row");
 			    
 			    if(step-8<configBT.years){
-			    	bt_checkbox.setAttribute("checked", "true");	
+			    	BtCheckBox.setAttribute("checked", "true");	
 			    }
 			    
-			    td.appendChild(bt_checkbox);
+			    td.appendChild(BtCheckBox);
 				tr.appendChild(td);
 		
 			}
@@ -467,26 +472,26 @@ function superSeasonAlgo($){
 		var html='<div class="row SSA_BT_Input" style="text-align:center;">';
 			html+='<p>Specifica gli anni su cui fare i calcoli</p>'
 			html+='<p>'
-			html+='<button onclick="set_data(5)">Ultimi 5</button>'
-			html+='<button onclick="set_data(10)">Ultimi 10</button>'
-			html+='<button onclick="set_data(15)">Ultimi 15</button>'
-			html+='<button onclick="set_data(99)">Tutti</button>'
-			html+='<button onclick="set_data(0)">Pulisci</button>'
+			html+='<button onclick="SetData(5)">Ultimi 5</button>'
+			html+='<button onclick="SetData(10)">Ultimi 10</button>'
+			html+='<button onclick="SetData(15)">Ultimi 15</button>'
+			html+='<button onclick="SetData(99)">Tutti</button>'
+			html+='<button onclick="SetData(0)">Pulisci</button>'
 			html+='</p>'
 			html+='<p></p>'
-			html+='<p><button onclick="calculate_data()">Aggiorna</button></p>'
+			html+='<p><button onclick="CalculateData()">Aggiorna</button></p>'
 			html+='<p>RB1.10</p>'
 			html+='</div>';
 		
 
 		//select the backtest chart as a refernce in the DOM
-		var BTchart = document.getElementById("snippet--backtest-chart");
+		var BtChart = document.getElementById("snippet--backtest-chart");
 		
 		//insert the text box after the chart
-		$(html).insertAfter(BTchart);
+		$(html).insertAfter(BtChart);
 
 		//prepare the header column of the table for calculated data
-		let calculated_data_header= [
+		let CalculatedDataHeader= [
 			{ name: configBT.low_perc_name},
 			{ name: "MEDIANA"},
 			{ name: configBT.high_perc_name},
@@ -497,16 +502,16 @@ function superSeasonAlgo($){
 		];
 
 		//Reference to the tables in the SA backtest page. 
-		var BT_Tables = document.getElementsByTagName("table");
+		var BtTables = document.getElementsByTagName("table");
 
 		//The table to be copied is the second one
-		var BT_Table = BT_Tables[1];
+		var BtDetailTable = BtTables[1];
 
 		//generate the table in the document
-		generate_table(BT_Table, calculated_data_header);
+		GenerateTable(BtDetailTable, CalculatedDataHeader);
 
 		//fill the table with calculated data based on default specified years
-		calculate_data();
+		CalculateData();
 
 	}
 	

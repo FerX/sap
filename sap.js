@@ -1,7 +1,7 @@
 /**
  * superSeasonAlgo
  * 
- * version 1.3.1
+ * version 1.3.2
  * 
  * Author: FerX
  * 
@@ -31,11 +31,11 @@ function superSeasonAlgo($){
 		showPro: true
 	}
 	
-	if(SAP && SAP.slogan){
+	if(typeof SAP !=="undefined" && SAP.slogan){
 		config.slogan = SAP.slogan
 	}
 	
-	if(SAP && SAP.showPro!==undefined){
+	if(typeof SAP !=="undefined" && SAP.showPro!==undefined){
 		config.showPro = SAP.showPro
 	}
 	
